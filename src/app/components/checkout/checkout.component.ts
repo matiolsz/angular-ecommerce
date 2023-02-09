@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Country } from 'src/app/common/country';
+import { State } from 'src/app/common/state';
 import { Luv2ShopFormService } from 'src/app/services/luv2-shop-form.service';
 
 @Component({
@@ -17,6 +19,11 @@ export class CheckoutComponent implements OnInit {
   creditCardYears: number[] = [];
   creditCardMonths: number[] = [];
   
+  countries: Country[] = [];
+  
+  shippingAddressStates: State[] = [];
+  billingAddressStates: State[] = [];
+
   constructor(private formBuilder: FormBuilder,
     private luv2ShopFormService: Luv2ShopFormService) { }
 
@@ -68,6 +75,11 @@ export class CheckoutComponent implements OnInit {
       }
     );
 
+    this.luv2ShopFormService.getCountries().subscribe(
+      data => {
+        this.countries = data;
+      }
+    )
   
     }
 
@@ -78,11 +90,18 @@ export class CheckoutComponent implements OnInit {
 
   copyShippingAddressToBillingAddress(event: Event ) {
      if ((<HTMLInputElement>event.target).checked) {
+
       this.checkoutFormGroup.controls['billingAddress']
       .setValue(this.checkoutFormGroup.controls['shippingAddress'].value);
+
+      this.billingAddressStates = this.shippingAddressStates;
+
      } else {
+
       this.checkoutFormGroup.controls['billingAddress'].reset();
-     }
+     
+      this.billingAddressStates = [];
+    }
   }
 
   handleMonthsAndYears() {
@@ -106,6 +125,23 @@ export class CheckoutComponent implements OnInit {
       }
     );
 
+  }
+
+  getStates(formGroupName: string) {
+    const formGroup = this.checkoutFormGroup.get(formGroupName);
+    const countryCode = formGroup!.value.country.code;
+    const countryName = formGroup!.value.country.name;
+
+    this.luv2ShopFormService.getStatesByCountryCode(countryCode).subscribe(
+      data => {
+        if (formGroupName === 'shippingAddress') {
+            this.shippingAddressStates = data;
+        } else {
+          this.billingAddressStates = data;
+        }
+        formGroup?.get('state')?.setValue(data[0]);
+      }
+    )
   }
 
 }
