@@ -118,8 +118,6 @@
                                         {{state.name}}
                                     </option>
                                 </select>
-
-                                2
                             </div>
                         </div>
                     </div>
@@ -153,10 +151,10 @@
 
                             <div *ngIf="shippingAddressZipCode?.invalid && (shippingAddressZipCode?.dirty || shippingAddressZipCode?.touched)" class="alert alert-danger mt-1">
                                 <div *ngIf="shippingAddressZipCode?.errors?.['required'] || shippingAddressZipCode?.errors?.['notOnlyWhitespace']">
-                                    Dtreet is required
+                                    Zip Code is required
                                 </div>
                                 <div *ngIf="shippingAddressZipCode?.errors?.['minlength']">
-                                    Street must have at least 2 character 
+                                    Zip Code must have at least 2 character 
                                 </div>
                             </div>
 
@@ -284,7 +282,7 @@
                     <h3>CreditCard</h3>
 
                     <div class="row">
-                        <div class="col-md-2"><label>cardType</label></div>
+                        <div class="col-md-2"><label>Card Type</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="cardType">
@@ -292,38 +290,81 @@
                                     <option>Mastercard</option>
                                 </select>
                             </div>
+
+                            <div *ngIf="cardType?.invalid && (cardType?.dirty || cardType?.touched)" class="alert alert-danger mt-1">
+                                <div *ngIf="cardType?.errors?.['required']">
+                                    Card Type is required
+                                </div>
+                            </div>
+                            
                         </div>
                     </div>
                     
                     <div class="row">
-                        <div class="col-md-2"><label>nameOnCard</label></div>
+                        <div class="col-md-2"><label>Owner Name</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="nameOnCard" type="text">
                             </div>
+
+                            <div *ngIf="nameOnCard?.invalid && (nameOnCard?.dirty || nameOnCard?.touched)" class="alert alert-danger mt-1">
+                                <div *ngIf="nameOnCard?.errors?.['required'] || nameOnCard?.errors?.['notOnlyWhitespace']">
+                                    Owner Name is required
+                                </div>
+                                <div *ngIf="nameOnCard?.errors?.['minlength']">
+                                    Owner Name must have at least 2 character 
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2"><label>cardNumber</label></div>
+                        <div class="col-md-2"><label>Card Number</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="cardNumber" type="text">
                             </div>
+
+                            <div *ngIf="cardNumber?.invalid && (cardNumber?.dirty || cardNumber?.touched)" class="alert alert-danger mt-1">
+                                <div *ngIf="cardNumber?.errors?.['required']">
+                                    Card Number is required
+                                </div>
+                                <div *ngIf="cardNumber?.errors?.['pattern']">
+                                    Card Number must have 16 numbers
+                                </div>
+                                <div *ngIf="cardNumber?.errors?.['minlength']">
+                                    Card Number must have at least 2 character 
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2"><label>securityCode</label></div>
+                        <div class="col-md-2"><label>Security Code</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <input formControlName="securityCode" type="text">
                             </div>
+
+                            <div *ngIf="securityCode?.invalid && (securityCode?.dirty || securityCode?.touched)" class="alert alert-danger mt-1">
+                                <div *ngIf="securityCode?.errors?.['required']">
+                                    Card Number is required
+                                </div>
+                                <div *ngIf="securityCode?.errors?.['pattern']">
+                                    Card Number must have 3 numbers
+                                </div>
+                                <div *ngIf="securityCode?.errors?.['minlength']">
+                                    Card Number must have at least 2 character 
+                                </div>
+                            </div>
+
                         </div>
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2"><label>expirationMonth</label></div>
+                        <div class="col-md-2"><label>Expiration Month</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="expirationMonth">
@@ -336,7 +377,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-2"><label>expirationYear</label></div>
+                        <div class="col-md-2"><label>Expiration Year</label></div>
                         <div class="col-md-9">
                             <div class="input-space">
                                 <select formControlName="expirationYear" (change)="handleMonthsAndYears()">
