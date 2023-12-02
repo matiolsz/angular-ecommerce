@@ -1,52 +1,49 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { CartItem } from '../common/cart-item';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CartService {
-
   cartItems: CartItem[] = [];
 
   totalPrice: Subject<number> = new BehaviorSubject<number>(0);
   totalQuantity: Subject<number> = new BehaviorSubject<number>(0);
-  
 
-  constructor() { }
+  constructor(private toastr: ToastrService) {}
 
   addToCart(theCartItem: CartItem) {
     let alreadyExistInCart: boolean = false;
     let existingCartItem: CartItem | undefined;
 
-    if(this.cartItems.length > 0) {
-
+    if (this.cartItems.length > 0) {
       for (let tempCartItem of this.cartItems) {
-        if(tempCartItem.id === theCartItem.id){
+        if (tempCartItem.id === theCartItem.id) {
           existingCartItem = tempCartItem;
           break;
         }
       }
 
-      alreadyExistInCart = (existingCartItem != undefined);
+      alreadyExistInCart = existingCartItem != undefined;
     }
 
     if (alreadyExistInCart) {
       existingCartItem?.quantity ? existingCartItem.quantity++ : 0;
-    }
-    else {
+    } else {
       this.cartItems.push(theCartItem);
     }
 
+    this.toastr.success('Item added to cart');
     this.computeCartTotals();
   }
 
   computeCartTotals() {
-
     let totalPriceValue: number = 0;
     let totalQuantityValue: number = 0;
 
-    for(let currentCartItem of this.cartItems) {
+    for (let currentCartItem of this.cartItems) {
       totalPriceValue += currentCartItem.quantity * currentCartItem.unitPrice;
       totalQuantityValue += currentCartItem.quantity;
     }
@@ -55,25 +52,25 @@ export class CartService {
     this.totalQuantity.next(totalQuantityValue);
   }
 
-  decrementQuantity(theCartItem: CartItem){
+  decrementQuantity(theCartItem: CartItem) {
     theCartItem.quantity--;
 
-    if(theCartItem.quantity===0){
+    if (theCartItem.quantity === 0) {
       this.remove(theCartItem);
-    }else {
+    } else {
       this.computeCartTotals();
     }
-
   }
 
   remove(theCartItem: CartItem) {
-    const itemIndex = this.cartItems.findIndex( tempCartItem => tempCartItem.id === theCartItem.id);
+    const itemIndex = this.cartItems.findIndex(
+      (tempCartItem) => tempCartItem.id === theCartItem.id
+    );
 
-    if(itemIndex > -1) {
+    if (itemIndex > -1) {
       this.cartItems.splice(itemIndex, 1);
 
       this.computeCartTotals();
     }
   }
-
 }
